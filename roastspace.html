@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROASTSPACE</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ── FONT FACE ──────────────────────────────── */
+        @font-face {
+            font-family: 'NON Natural Grotesk';
+            src: url('/fonts/NON-Natural-Grotesk-Medium.woff2') format('woff2');
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --cream: #f2f2f0;
+            --black: #0f0f0d;
+            --rule: 1px solid rgba(15, 15, 13, 0.14);
+            --header-h: 120px;
+            --header-h-small: 60px;
+            --font-disp: 'NON Natural Grotesk', 'Pretendard', sans-serif;
+            --font-mono: 'NON Natural Grotesk', 'Pretendard', sans-serif;
+            --font-body: 'NON Natural Grotesk', 'Pretendard', sans-serif;
+            --font-hand: 'Caveat', cursive;
+            --mid: rgba(15, 15, 13, 0.4);
+            --accent: #EAD18B;
+            --orange: #FF5C00;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            background: var(--cream);
+            color: var(--black);
+            font-family: var(--font-body);
+            font-weight: 300;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font: inherit;
+            color: inherit;
+        }
+
+        /* ═══════════════════════════════════════
+   HEADER + FILTER
+═══════════════════════════════════════ */
+        #header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 200;
+            height: var(--header-h);
+            background: var(--cream);
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            gap: 2rem;
+            transition: height 0.4s cubic-bezier(0.25, 1, 0.5, 1), background 0.4s ease, border-bottom 0.3s ease;
+        }
+
+        #header.scrolled {
+            height: var(--header-h-small);
+            justify-content: center;
+            border-bottom: var(--rule);
+        }
+
+        .logo {
+            font-family: var(--font-disp);
+            font-size: 2.25rem;
+            font-weight: 600;
+            line-height: 0.85;
+            color: var(--black);
+            flex-shrink: 0;
+            text-transform: uppercase;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            display: block;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        #header.scrolled .logo {
+            transform: scale(0.5);
+            text-align: center;
+            line-height: 1;
+        }
+
+        .header-sep {
+            width: 1px;
+            height: 1.125rem;
+            background: rgba(15, 15, 13, 0.15);
+            flex-shrink: 0;
+        }
+
+        #header.scrolled .header-sep {
+            opacity: 0;
+            width: 0;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            flex: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        #header.scrolled .filter-group {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .sel-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .sel-wrap::after {
+            content: "";
+            position: absolute;
+            right: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 10px;
+            height: 6px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 10 6'%3E%3Cpath stroke='%23999' stroke-linecap='round' stroke-linejoin='round' stroke-width='1' d='m1 1 4 4 4-4'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .f-select {
+            appearance: none;
+            -webkit-appearance: none;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            letter-spacing: 0.02em;
+            color: var(--mid);
+            cursor: pointer;
+            padding: 0 3rem 0 1.25rem;
+            height: var(--header-h);
+            transition: color 0.3s;
+        }
+
+        .f-select:hover {
+            color: var(--black);
+        }
+
+        .btn-group-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-left: auto;
+        }
+
+        .f-saved-toggle {
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            color: var(--mid);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .f-saved-toggle:hover {
+            color: var(--black);
+        }
+
+        .f-saved-toggle svg {
+            width: 1.125rem;
+            height: 1.125rem;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+        }
+
+        /* ═══════════════════════════════════════
+   MAIN GRID
+═══════════════════════════════════════ */
+        #main {
+            padding-top: var(--header-h);
+            min-height: 100vh;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+        }
+
+        .spot-card,
+        .color-card {
+            position: relative;
+            aspect-ratio: 2 / 2.8;
+            overflow: hidden;
+            border: none;
+            border-radius: 0;
+            isolation: isolate;
+        }
+
+        .card-city {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            z-index: 4;
+            width: 5rem;
+            height: 5rem;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 200;
+            color: #fff;
+            text-align: center;
+            line-height: 1;
+        }
+
+        .card-top-left {
+            position: absolute;
+            top: 1.25rem;
+            left: 1.25rem;
+            z-index: 4;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .card-gu {
+            font-size: 1.25rem;
+            font-weight: 400;
+            color: #fff;
+            text-transform: uppercase;
+            line-height: 1;
+            opacity: 0.9;
+        }
+
+        .card-name {
+            font-size: 3.5rem;
+            font-weight: 300;
+            line-height: 1.0;
+            color: #fff;
+            letter-spacing: -0.02em;
+        }
+
+        .card-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 4;
+            padding: 0 1.25rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card-hours {
+            font-size: 1.8rem;
+            font-weight: 100;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        .card-desc-hover {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 0.3s 0.1s;
+            pointer-events: none;
+            text-align: center;
+            background: none;
+        }
+
+        .spot-card:hover .card-desc-hover {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .card-desc-hover p {
+            font-size: 1.125rem;
+            font-weight: 100;
+            color: #fff;
+            line-height: 1.7;
+            max-width: 85%;
+            display: block;
+        }
+
+        .btn-save-text {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            font-weight: 500;
+            color: #fff;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-top: 24px;
+            padding: 8px 16px;
+            transition: color 0.3s, transform 0.2s;
+            cursor: pointer;
+            z-index: 12;
+            display: block;
+        }
+
+        .btn-save-text.active {
+            color: var(--orange);
+        }
+
+        .btn-save-text:hover {
+            transform: scale(1.05);
+        }
+
+        .card-img {
+            position: absolute;
+            inset: 0;
+        }
+
+        .card-img img {
+            transition: transform 0.7s ease;
+        }
+
+        .spot-card:hover .card-img img {
+            transform: scale(1.04);
+        }
+
+        .card-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(to bottom, rgba(15, 15, 13, 0.45) 0%, rgba(15, 15, 13, 0) 40%),
+                linear-gradient(to top, rgba(15, 15, 13, 0.55) 0%, rgba(15, 15, 13, 0) 50%);
+        }
+
+        .card-blob {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+            border-radius: 0;
+            opacity: 0;
+            transition: border-radius 0.6s cubic-bezier(0.22, 1.0, 0.36, 1), opacity 0.01s;
+        }
+
+        .spot-card:hover .card-blob {
+            border-radius: 50%;
+            opacity: 1;
+        }
+
+        .color-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        .color-card .quote {
+            font-family: var(--font-hand);
+            font-size: 4.5rem;
+            color: var(--black);
+            line-height: 1.1;
+            transform: rotate(-3deg);
+            opacity: 0.95;
+        }
+
+        .color-card .letter {
+            position: absolute;
+            font-family: var(--font-disp);
+            font-size: 112px;
+            font-weight: 600;
+            color: var(--black);
+            line-height: 1;
+        }
+
+        #loadMore {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5rem 0;
+            width: 100%;
+        }
+
+        .spinner {
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 2px solid rgba(15, 15, 13, 0.1);
+            border-top-color: var(--black);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ═══════════════════════════════════════
+   SIDEBAR & MODAL
+═══════════════════════════════════════ */
+        #savedOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 15, 13, 0.3);
+            backdrop-filter: blur(4px);
+            z-index: 300;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.4s;
+        }
+
+        #savedOverlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #savedSidebar {
+            position: fixed;
+            top: 0;
+            right: -450px;
+            width: 450px;
+            height: 100vh;
+            background: var(--cream);
+            z-index: 301;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.05);
+            transition: right 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        #savedSidebar.open {
+            right: 0;
+        }
+
+        .side-header {
+            padding: 2.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: var(--rule);
+        }
+
+        .side-title {
+            font-family: var(--font-disp);
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .side-close {
+            font-size: 1.5rem;
+        }
+
+        #savedList {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem 0;
+        }
+
+        .side-item {
+            padding: 1.5rem 2rem;
+            display: flex;
+            gap: 1.25rem;
+            border-bottom: rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .side-item:hover {
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .side-item img {
+            width: 80px;
+            height: 80px;
+            border-radius: 4px;
+        }
+
+        .side-item-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .side-item-name {
+            font-size: 1.25rem;
+            font-weight: 500;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .side-item-remove {
+            margin-left: auto;
+            color: var(--orange);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 400;
+            background: rgba(15, 15, 13, 0.78);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-box {
+            background: var(--cream);
+            width: 100%;
+            max-width: 820px;
+            max-height: 90vh;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border: var(--rule);
+            position: relative;
+            transform: translateY(18px);
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .modal-overlay.open .modal-box {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 10;
+            background: var(--black);
+            color: var(--cream);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ── Carousel Styles ─────────────────── */
+        .modal-img-wrap {
+            aspect-ratio: 1/1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .carousel-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .carousel-item {
+            min-width: 100%;
+            height: 100%;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.2);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            z-index: 5;
+            transition: background 0.3s;
+        }
+
+        .carousel-btn:hover {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .carousel-btn.prev {
+            left: 1rem;
+        }
+
+        .carousel-btn.next {
+            right: 1rem;
+        }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 1.25rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 5;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .dot.active {
+            background: #fff;
+            transform: scale(1.3);
+        }
+
+        .modal-body {
+            padding: 36px 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-left: var(--rule);
+            position: relative;
+        }
+
+        .modal-name {
+            font-size: 3rem;
+            line-height: 0.9;
+            margin-bottom: 16px;
+        }
+
+        .modal-desc {
+            font-size: 13px;
+            color: #3a3832;
+            line-height: 1.85;
+            margin-bottom: 28px;
+        }
+
+        .modal-row {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 10px;
+        }
+
+        .m-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            color: var(--mid);
+            min-width: 56px;
+        }
+
+        .m-val {
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .modal-save-btn {
+            position: absolute;
+            top: 36px;
+            right: 32px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--mid);
+        }
+
+        .modal-save-btn.active {
+            color: var(--orange);
+        }
+
+        @media (max-width: 1100px) {
+            .grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 850px) {
+            #header {
+                height: auto;
+                padding: 1.25rem 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            #main {
+                padding-top: 10rem;
+            }
+
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            #savedSidebar {
+                width: 100%;
+                right: -100%;
+            }
+
+            .f-select {
+                height: 60px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-box {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header id="header">
+        <span class="logo" id="homeLogo">ROAST<br>SPACE</span>
+        <div class="header-sep"></div>
+        <div class="filter-group">
+            <div class="sel-wrap"><select class="f-select" id="selCity">
+                    <option value="">전체 시</option>
+                </select></div>
+            <div class="sel-wrap"><select class="f-select" id="selGu">
+                    <option value="">전체 구</option>
+                </select></div>
+            <div class="sel-wrap"><select class="f-select" id="selDong">
+                    <option value="">전체 동</option>
+                </select></div>
+            <div class="btn-group-right">
+                <button class="f-saved-toggle" id="savedToggle">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                    </svg>
+                    SAVED
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="main">
+        <div class="grid" id="grid">
+            <div id="noResult" style="display:none; padding: 5rem; text-align: center; grid-column: 1/-1;">조건에 맞는 공간이
+                없습니다.</div>
+            <div id="loadMore">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </main>
+
+    <div id="savedOverlay"></div>
+    <aside id="savedSidebar">
+        <div class="side-header">
+            <h3 class="side-title">My Saved Spaces</h3>
+            <button class="side-close" id="sideClose">✕</button>
+        </div>
+        <div id="savedList"></div>
+    </aside>
+
+    <div id="modal" class="modal-overlay">
+        <div class="modal-box">
+            <button class="modal-close" id="modalClose">✕</button>
+            <div class="modal-img-wrap" id="modalImgWrap">
+                <div class="carousel-container" id="carouselContainer"></div>
+                <button class="carousel-btn prev" id="carouselPrev">‹</button>
+                <button class="carousel-btn next" id="carouselNext">›</button>
+                <div class="carousel-dots" id="carouselDots"></div>
+            </div>
+            <div class="modal-body">
+                <button class="modal-save-btn" id="modalSaveBtn">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <path
+                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                    </svg>
+                    <span id="modalSaveText">SAVE SPACE</span>
+                </button>
+                <h2 class="modal-name" id="modalName"></h2>
+                <p class="modal-desc" id="modalDesc"></p>
+                <div class="modal-meta">
+                    <div class="modal-row"><span class="m-label">주소</span><span class="m-val" id="modalAddr"></span>
+                    </div>
+                    <div class="modal-row"><span class="m-label">영업시간</span><span class="m-val" id="modalHours"></span>
+                    </div>
+                </div>
+                <div class="modal-tags" id="modalTags"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, deleteDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        const BASE = [
+            {
+                id: 1, name: "Ohio", city: "서울", gu: "광진구", dong: "자양동", addr: "서울 광진구 자양로13길 103 1층", hours: "10:00–20:00",
+                img: "https://github.com/neutsunday/coffee/blob/main/ohio/ohio1.jpeg?raw=true",
+                images: [
+                    "https://github.com/neutsunday/coffee/blob/main/ohio/ohio1.jpeg?raw=true",
+                    "https://github.com/neutsunday/coffee/blob/main/ohio/ohio2.jpeg?raw=true",
+                    "https://github.com/neutsunday/coffee/blob/main/ohio/ohio3.jpeg?raw=true",
+                    "https://github.com/neutsunday/coffee/blob/main/ohio/ohio4.jpeg?raw=true"
+                ],
+                desc: "자양동 골목 안, 낮은 층고와 날것의 콘크리트 벽이 공존하는 공간.", tags: ["인더스트리얼", "자연광"]
+            },
+            { id: 2, name: "odn", city: "서울", gu: "마포구", dong: "합정동", addr: "서울 마포구 광성로6길 36", hours: "14:00–22:00", img: "https://raw.githubusercontent.com/neutsunday/coffee/main/odnseoul/odn1.jpeg", images: ["https://raw.githubusercontent.com/neutsunday/coffee/main/odnseoul/odn1.jpeg"], desc: "해가 진 후에야 빛을 발하는 공간. 어두운 목재와 낮게 깔린 조명.", tags: ["다크 우드", "조명"] },
+            { id: 3, name: "Hiperson", city: "경기", gu: "화성시", dong: "꽃내음", addr: "경기 화성시 만세구 꽃내음2길 3-6 1층", hours: "09:00–17:00", img: "https://raw.githubusercontent.com/neutsunday/coffee/main/hipersongyeonggi/hiperson1.jpeg", images: ["https://raw.githubusercontent.com/neutsunday/coffee/main/hipersongyeonggi/hiperson1.jpeg"], desc: "화성의 논밭 사이에 자리한 단층 건물. 사방이 유리로 열려 있습니다.", tags: ["전원", "고요함"] },
+            { id: 4, name: "Match", city: "서울", gu: "노원구", dong: "공릉동", addr: "서울 노원구 공릉로35길 18 1층", hours: "11:00–20:00", img: "https://raw.githubusercontent.com/neutsunday/coffee/main/matchseoul/match1.jpeg", images: ["https://raw.githubusercontent.com/neutsunday/coffee/main/matchseoul/match1.jpeg"], desc: "공릉동 주택가 한 켠, 오래된 나무 테이블과 손때 묻은 오브제들.", tags: ["빈티지", "아날로그"] },
+            { id: 5, name: "oheim", city: "서울", gu: "마포구", dong: "마포동", addr: "서울 마포구 백범로 85 1층", hours: "08:00–17:00", img: "https://raw.githubusercontent.com/neutsunday/coffee/main/oheimseoul/oheim1.jpeg", images: ["https://raw.githubusercontent.com/neutsunday/coffee/main/oheimseoul/oheim1.jpeg"], desc: "백범로의 아침을 여는 공간. 화이트와 원목이 따뜻하게 맞닿습니다.", tags: ["화이트", "원목"] },
+            { id: 6, name: "Okkz", city: "서울", gu: "마포구", dong: "와우산", addr: "서울 마포구 와우산로 171 1층", hours: "09:00–17:00", img: "https://raw.githubusercontent.com/neutsunday/coffee/main/okkzseoul/okkz1.jpeg", images: ["https://raw.githubusercontent.com/neutsunday/coffee/main/okkzseoul/okkz1.jpeg"], desc: "와우산로의 경사를 타고 앉은 공간. 창 너머로 홍대 골목이 보입니다.", tags: ["경사지", "홍대"] },
+        ];
+
+        const FIXED_PALETTE = ['#D14C18', '#F4D68C', '#7C9DD2', '#673C33', '#B2AB2B', '#E36888', '#F08C21', '#F2D88F', '#6698CC', '#B4B534'];
+
+        let filtered = [...BASE];
+        let savedIds = new Set();
+        let user = null;
+        let isLoading = false;
+        let itemCounter = 0;
+        let colorCardIdx = 0;
+        const rhythmicPattern = [1, 4, 2];
+        let patternIdx = 0;
+        let realCardInBatch = 0;
+        let currentItemInModal = null;
+        let currentCarouselIndex = 0;
+
+        const initAuth = async () => {
+            await signInAnonymously(auth);
+            onAuthStateChanged(auth, (u) => { user = u; if (u) listenToSaved(u.uid); });
+        };
+        initAuth();
+
+        const listenToSaved = (uid) => {
+            const colRef = collection(db, 'artifacts', appId, 'users', uid, 'savedSpaces');
+            onSnapshot(colRef, (snap) => {
+                savedIds = new Set(snap.docs.map(doc => parseInt(doc.id)));
+                updateSavedStates();
+                updateSavedSidebar();
+            });
+        };
+
+        const toggleSave = async (id, e) => {
+            if (e) e.stopPropagation();
+            if (!user) return;
+            const docRef = doc(db, 'artifacts', appId, 'users', user.uid, 'savedSpaces', id.toString());
+            if (savedIds.has(id)) await deleteDoc(docRef);
+            else await setDoc(docRef, { savedAt: Date.now() });
+        };
+
+        const updateSavedStates = () => {
+            document.querySelectorAll('.btn-save-text').forEach(btn => {
+                const id = parseInt(btn.dataset.id);
+                const isSaved = savedIds.has(id);
+                btn.classList.toggle('active', isSaved);
+                btn.textContent = isSaved ? 'SAVED' : 'SAVE';
+            });
+            if (currentItemInModal) {
+                const modalBtn = document.getElementById('modalSaveBtn');
+                const isSaved = savedIds.has(currentItemInModal.id);
+                modalBtn.classList.toggle('active', isSaved);
+                document.getElementById('modalSaveText').textContent = isSaved ? 'SAVED' : 'SAVE SPACE';
+            }
+        };
+
+        const updateSavedSidebar = () => {
+            const container = document.getElementById('savedList');
+            const savedItems = BASE.filter(item => savedIds.has(item.id));
+            if (savedItems.length === 0) {
+                container.innerHTML = `<div style="padding:4rem; text-align:center; font-family:var(--font-hand); font-size:1.5rem; opacity:0.5;">저장된 공간이 없습니다.</div>`;
+                return;
+            }
+            container.innerHTML = savedItems.map(item => `
+        <div class="side-item" data-id="${item.id}">
+          <img src="${item.img}" alt="${item.name}">
+          <div class="side-item-info">
+            <div class="side-item-name">${item.name}</div>
+            <div class="side-item-addr">${item.city} ${item.gu}</div>
+          </div>
+          <button class="side-item-remove" data-id="${item.id}">✕</button>
+        </div>
+      `).join('');
+            container.querySelectorAll('.side-item').forEach(el => el.addEventListener('click', () => openModal(BASE.find(b => b.id === parseInt(el.dataset.id)))));
+            container.querySelectorAll('.side-item-remove').forEach(btn => btn.addEventListener('click', (e) => toggleSave(parseInt(btn.dataset.id), e)));
+        };
+
+        function createColorCard() {
+            const idx = colorCardIdx++;
+            const color = FIXED_PALETTE[idx % FIXED_PALETTE.length];
+            const div = document.createElement('div');
+            div.className = 'color-card';
+            div.style.backgroundColor = color;
+            if (idx % 5 === 0) div.innerHTML = `<div class="quote">Spaces for<br>Coffee Lovers</div>`;
+            else div.innerHTML = `<div class="letter" style="top:20px; left:20px;">R</div><div class="letter" style="bottom:20px; right:20px;">S</div>`;
+            return div;
+        }
+
+        function loadMore() {
+            if (isLoading || filtered.length === 0) return;
+            isLoading = true;
+            const grid = document.getElementById('grid');
+            const loader = document.getElementById('loadMore');
+
+            setTimeout(() => {
+                for (let i = 0; i < 12; i++) {
+                    const data = filtered[itemCounter % filtered.length];
+                    const card = document.createElement('article');
+                    card.className = 'spot-card';
+                    const isSaved = savedIds.has(data.id);
+                    const guColorMap = { '광진구': '#EAD18B', '마포구': '#6698CC', '노원구': '#B4B534', '화성시': '#815EA7' };
+
+                    card.innerHTML = `
+            <div class="card-img"><img src="${data.img}" alt="${data.name}" loading="lazy"></div>
+            <div class="card-overlay"></div>
+            <div class="card-blob" style="background:${guColorMap[data.gu] || '#7A7A74'};"></div>
+            <div class="card-desc-hover">
+              <p>${data.desc}</p>
+              <button class="btn-save-text ${isSaved ? 'active' : ''}" data-id="${data.id}">${isSaved ? 'SAVED' : 'SAVE'}</button>
+            </div>
+            <div class="card-top-left">
+              <span class="card-gu">${data.gu.replace('구', '').replace('시', '')}</span>
+              <div class="card-name">${data.name}</div>
+            </div>
+            <div class="card-city">${data.city === '서울' ? 'Seoul' : 'Gyeonggi'}</div>
+            <div class="card-bottom"><span class="card-hours">MON - SUN ${data.hours}</span></div>
+          `;
+
+                    card.querySelector('.btn-save-text').addEventListener('click', (e) => toggleSave(data.id, e));
+                    card.addEventListener('click', (e) => { if (!e.target.closest('.btn-save-text')) openModal(data); });
+
+                    grid.insertBefore(card, loader);
+                    itemCounter++;
+
+                    if (document.getElementById('selCity').value === "") {
+                        realCardInBatch++;
+                        if (realCardInBatch >= rhythmicPattern[patternIdx]) {
+                            grid.insertBefore(createColorCard(), loader);
+                            realCardInBatch = 0;
+                            patternIdx = (patternIdx + 1) % rhythmicPattern.length;
+                        }
+                    }
+                }
+                isLoading = false;
+                if (window.innerHeight >= document.body.offsetHeight) loadMore();
+            }, 400);
+        }
+
+        const io = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && !isLoading) loadMore();
+        }, { rootMargin: '400px' });
+        io.observe(document.getElementById('loadMore'));
+
+        const selCity = document.getElementById('selCity');
+        const selGu = document.getElementById('selGu');
+        const selDong = document.getElementById('selDong');
+
+        function initFilter() {
+            const cities = [...new Set(BASE.map(b => b.city))];
+            cities.forEach(c => { const opt = new Option(c, c); selCity.add(opt); });
+        }
+
+        function applyFilter() {
+            const c = selCity.value; const g = selGu.value; const d = selDong.value;
+            filtered = BASE.filter(item => (!c || item.city === c) && (!g || item.gu === g) && (!d || item.dong === d));
+            itemCounter = 0; realCardInBatch = 0; patternIdx = 0;
+            document.querySelectorAll('.spot-card, .color-card').forEach(el => el.remove());
+            document.getElementById('noResult').style.display = filtered.length === 0 ? 'block' : 'none';
+            loadMore();
+        }
+
+        selCity.addEventListener('change', () => {
+            selGu.innerHTML = '<option value="">전체 구</option>';
+            selDong.innerHTML = '<option value="">전체 동</option>';
+            const gus = [...new Set(BASE.filter(b => b.city === selCity.value).map(b => b.gu))];
+            gus.forEach(g => selGu.add(new Option(g, g)));
+            applyFilter();
+        });
+        selGu.addEventListener('change', () => {
+            selDong.innerHTML = '<option value="">전체 동</option>';
+            const dongs = [...new Set(BASE.filter(b => b.gu === selGu.value).map(b => b.dong))];
+            dongs.forEach(d => selDong.add(new Option(d, d)));
+            applyFilter();
+        });
+        selDong.addEventListener('change', applyFilter);
+
+        document.getElementById('savedToggle').addEventListener('click', () => {
+            document.getElementById('savedSidebar').classList.add('open');
+            document.getElementById('savedOverlay').classList.add('open');
+        });
+        document.getElementById('sideClose').addEventListener('click', () => {
+            document.getElementById('savedSidebar').classList.remove('open');
+            document.getElementById('savedOverlay').classList.remove('open');
+        });
+
+        /* ── Carousel Logic ─────────────────── */
+        function updateCarousel() {
+            const container = document.getElementById('carouselContainer');
+            const dots = document.querySelectorAll('.dot');
+            container.style.transform = `translateX(-${currentCarouselIndex * 100}%)`;
+            dots.forEach((dot, idx) => dot.classList.toggle('active', idx === currentCarouselIndex));
+
+            const imgs = currentItemInModal.images || [currentItemInModal.img];
+            document.getElementById('carouselPrev').style.display = currentCarouselIndex === 0 ? 'none' : 'flex';
+            document.getElementById('carouselNext').style.display = currentCarouselIndex === imgs.length - 1 ? 'none' : 'flex';
+        }
+
+        function openModal(data) {
+            currentItemInModal = data;
+            currentCarouselIndex = 0;
+
+            // Carousel Setup
+            const images = data.images || [data.img];
+            const container = document.getElementById('carouselContainer');
+            const dotsWrap = document.getElementById('carouselDots');
+
+            container.innerHTML = images.map(img => `<div class="carousel-item"><img src="${img}" alt="${data.name}"></div>`).join('');
+            dotsWrap.innerHTML = images.map((_, idx) => `<div class="dot ${idx === 0 ? 'active' : ''}"></div>`).join('');
+
+            if (images.length <= 1) {
+                document.getElementById('carouselPrev').style.display = 'none';
+                document.getElementById('carouselNext').style.display = 'none';
+                dotsWrap.style.display = 'none';
+            } else {
+                dotsWrap.style.display = 'flex';
+                updateCarousel();
+            }
+
+            document.getElementById('modalName').textContent = data.name;
+            document.getElementById('modalDesc').textContent = data.desc;
+            document.getElementById('modalAddr').textContent = data.addr;
+            document.getElementById('modalHours').textContent = 'MON - SUN ' + data.hours;
+            document.getElementById('modalTags').innerHTML = data.tags.map(t => `<span class="modal-tag"># ${t}</span>`).join('');
+
+            updateSavedStates();
+            document.getElementById('modal').classList.add('open');
+        }
+
+        document.getElementById('carouselPrev').addEventListener('click', () => {
+            if (currentCarouselIndex > 0) {
+                currentCarouselIndex--;
+                updateCarousel();
+            }
+        });
+
+        document.getElementById('carouselNext').addEventListener('click', () => {
+            const imgs = currentItemInModal.images || [currentItemInModal.img];
+            if (currentCarouselIndex < imgs.length - 1) {
+                currentCarouselIndex++;
+                updateCarousel();
+            }
+        });
+
+        document.getElementById('modalClose').addEventListener('click', () => document.getElementById('modal').classList.remove('open'));
+        document.getElementById('modalSaveBtn').addEventListener('click', () => toggleSave(currentItemInModal.id));
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) document.getElementById('header').classList.add('scrolled');
+            else document.getElementById('header').classList.remove('scrolled');
+        });
+
+        initFilter();
+        loadMore();
+    </script>
+</body>
+
+</html>
